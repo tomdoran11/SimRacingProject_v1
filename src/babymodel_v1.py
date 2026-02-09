@@ -7,7 +7,7 @@ from load_data import load_lap_data
 df = load_lap_data("raw_lap_data.csv")
 
 # Select features and target
-features = ['avg_throttle', 'avg_brake', 'avg_speed']
+features = ['avg_throttle', 'avg_brake', 'avg_speed', 'tire_wear']
 target = "lap_time"
 
 X = df[features]
