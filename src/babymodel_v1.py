@@ -13,6 +13,11 @@ target = "lap_time"
 X = df[features]
 y = df[target]
 
+# Prints and computes more detailed summary about data
+df.info()
+print(df.isnull().sum())
+df.describe()
+
 # Split into train and test
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=45)
 
