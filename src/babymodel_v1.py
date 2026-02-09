@@ -7,14 +7,14 @@ from load_data import load_lap_data
 df = load_lap_data("raw_lap_data.csv")
 
 # Select features and target
-features = ['avg_throttle', 'avg_brake', 'avg_speed', 'tire_wear']
+features = ['avg_throttle', 'avg_brake', 'avg_speed', 'tire_wear', 'rain_percentage']
 target = "lap_time"
 
 X = df[features]
 y = df[target]
 
 # Split into train and test
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=45)
 
 # Train a simple linear regression model
 model = LinearRegression()
