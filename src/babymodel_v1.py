@@ -32,8 +32,6 @@ model_s1 = RandomForestRegressor(
 model_s1.fit(X, y_s1)
 X_text = X.iloc[[0]]
 s1_pred = model_s1.predict(X_text)[0]
-print('S1 Prediction: ', round(s1_pred, 2))
-print('Actual S1 time: ', y_s1.iloc[0])
 
 # Create s2 predicting model
 model_s2 = RandomForestRegressor(
@@ -44,8 +42,6 @@ model_s2 = RandomForestRegressor(
 model_s2.fit(X, y_s2)
 X_text = X.iloc[[0]]
 s2_pred = model_s2.predict(X_text)[0]
-print('S2 Prediction: ', round(s2_pred, 2))
-print('Actual S2 time: ', y_s2.iloc[0])
 
 # Create s3 predicting model
 model_s3 = RandomForestRegressor(
@@ -56,19 +52,20 @@ model_s3 = RandomForestRegressor(
 model_s3.fit(X, y_s3)
 X_text = X.iloc[[0]]
 s3_pred = model_s3.predict(X_text)[0]
-print('S3 Prediction: ', round(s3_pred, 2))
-print('Actual S3 time: ', y_s1.iloc[0])
 
+# Predict a lap
+X_test = X.iloc[[0]]
+s1_pred = model_s1.predict(X_text)[0]
+s2_pred = model_s2.predict(X_text)[0]
+s3_pred = model_s3.predict(X_text)[0]
 
-# Split into train and test
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=45)
+# Reconstruct lap time using sectors
 
-# Train a simple linear regression model
-model = LinearRegression()
-model.fit(X_train, y_train)
+lap_pred = s1_pred + s2_pred + s3_pred
+lap_actual = y_s1.iloc[0] + y_s2.iloc[0] + y_s3.iloc[0]
 
-# Make predictions and check accuracy
-predictions = model.predict(X_test)
-print("Predictions: ", predictions[:5])
-print("Actual: ", y_test[:5].values)
-print("Model score (R^2): ", model.score(X_test, y_test))
+print('S1 Prediction: ', round(s1_pred, 2), 'Actual S1 time: ', y_s1.iloc[0])
+print('S2 Prediction: ', round(s2_pred, 2), 'Actual S2 time: ', y_s2.iloc[0])
+print('S3 Prediction: ', round(s3_pred, 2), 'Actual S3 time: ', y_s3.iloc[0])
+print('Predicted lap time: ', round(lap_pred, 3))
+print('Actual lap time: ', round(lap_actual, 3))
