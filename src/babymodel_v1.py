@@ -3,6 +3,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from load_data import load_lap_data
 from sklearn.ensemble import RandomForestRegressor
+import numpy as np
 
 # Load the data from the csv
 df = load_lap_data("raw_lap_data.csv")
@@ -55,17 +56,26 @@ s3_pred = model_s3.predict(X_text)[0]
 
 # Predict a lap
 X_test = X.iloc[[0]]
-s1_pred = model_s1.predict(X_text)[0]
-s2_pred = model_s2.predict(X_text)[0]
-s3_pred = model_s3.predict(X_text)[0]
+
+# Predict all laps using sectors
+s1_preds = model_s1.predict(X)
+s2_preds = model_s2.predict(X)
+s3_preds = model_s3.predict(X)
 
 # Reconstruct lap time using sectors
 
-lap_pred = s1_pred + s2_pred + s3_pred
+lap_preds = s1_preds + s2_preds + s3_preds # Array of length 60
 lap_actual = y_s1.iloc[0] + y_s2.iloc[0] + y_s3.iloc[0]
 
-print('S1 Prediction: ', round(s1_pred, 2), 'Actual S1 time: ', y_s1.iloc[0])
-print('S2 Prediction: ', round(s2_pred, 2), 'Actual S2 time: ', y_s2.iloc[0])
-print('S3 Prediction: ', round(s3_pred, 2), 'Actual S3 time: ', y_s3.iloc[0])
-print('Predicted lap time: ', round(lap_pred, 3))
-print('Actual lap time: ', round(lap_actual, 3))
+lap_preds_rounded = np.round(lap_preds, 3)
+
+# print first 5 laps
+print("First 5 laps predicted vs actual: ")
+for i in range(5):
+    print(f"Lap {i+1} Predicted: {round(lap_preds[i], 2)}, Actual: {round(df['lap_time'].iloc[i], 2)}")
+
+print('S1 Prediction: ', np.round(s1_preds[0], 2), 'Actual S1 time: ', y_s1.iloc[0])
+print('S2 Prediction: ', np.round(s2_preds[0], 2), 'Actual S2 time: ', y_s2.iloc[0])
+print('S3 Prediction: ', np.round(s3_preds[0], 2), 'Actual S3 time: ', y_s3.iloc[0])
+print('Predicted lap time: ', np.round(lap_preds[0], 3), 'Actual lap time: ', y.iloc[0])
+
