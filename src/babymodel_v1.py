@@ -68,14 +68,21 @@ lap_preds = s1_preds + s2_preds + s3_preds # Array of length 60
 lap_actual = y_s1.iloc[0] + y_s2.iloc[0] + y_s3.iloc[0]
 
 lap_preds_rounded = np.round(lap_preds, 3)
+diff = abs(lap_preds[0]- y.iloc[0])
 
-# print first 5 laps
-print("First 5 laps predicted vs actual: ")
+# Lap 1 predicted time
+print('\nPredicted lap time: ', np.round(lap_preds[0], 3))
+print('Actual lap time: ', y.iloc[0])
+print('Diff = ', round(diff, 2))
+
+# print first 5 lap predictions
+print("\nFirst 5 laps predicted vs actual: ")
 for i in range(5):
     print(f"Lap {i+1} Predicted: {round(lap_preds[i], 2)}, Actual: {round(df['lap_time'].iloc[i], 2)}")
 
+# Lap 1 Sector Predictions
+print('\nSector predictions: ')
 print('S1 Prediction: ', np.round(s1_preds[0], 2), 'Actual S1 time: ', y_s1.iloc[0])
 print('S2 Prediction: ', np.round(s2_preds[0], 2), 'Actual S2 time: ', y_s2.iloc[0])
 print('S3 Prediction: ', np.round(s3_preds[0], 2), 'Actual S3 time: ', y_s3.iloc[0])
-print('Predicted lap time: ', np.round(lap_preds[0], 3), 'Actual lap time: ', y.iloc[0])
 
