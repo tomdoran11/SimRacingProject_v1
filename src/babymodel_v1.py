@@ -24,6 +24,18 @@ assert 'sector_1_time' not in X.columns
 assert 'sector_2_time' not in X.columns
 assert 'sector_3_time' not in X.columns
 
+# Split the data into training and test sets for each sector
+
+X_train, X_test, y_train_s1, y_test=s1 = train_test_split(
+    X, y_s1, test_size=0.2, random_state=42
+)
+_, _, y_train_s2, y_test_s2 = train_test_split(
+    X, y_s2, test_size=0.2, random_state=42
+)
+_, _, y_train_s3, y_test_s3 = train_test_split(
+    X, y_s2, test_size=0.2, random_state=42
+)
+
 # Create s1 predicting model
 model_s1 = RandomForestRegressor(
     n_estimators=100,
