@@ -42,7 +42,7 @@ model_s1 = RandomForestRegressor(
     random_state=42
 )
 # Train model
-model_s1.fit(X, y_s1)
+model_s1.fit(X_train, y_train_s1)
 X_text = X.iloc[[0]]
 s1_pred = model_s1.predict(X_text)[0]
 
@@ -52,7 +52,7 @@ model_s2 = RandomForestRegressor(
     random_state=42
 )
 # Train model
-model_s2.fit(X, y_s2)
+model_s2.fit(X_train, y_train_s2)
 X_text = X.iloc[[0]]
 s2_pred = model_s2.predict(X_text)[0]
 
@@ -62,7 +62,7 @@ model_s3 = RandomForestRegressor(
     random_state=42
 )
 # Train model
-model_s3.fit(X, y_s3)
+model_s3.fit(X_train, y_train_s3)
 X_text = X.iloc[[0]]
 s3_pred = model_s3.predict(X_text)[0]
 
