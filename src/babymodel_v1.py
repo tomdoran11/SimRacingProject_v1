@@ -4,6 +4,7 @@ from load_data import load_lap_data
 from sklearn.ensemble import RandomForestRegressor
 import numpy as np
 from sklearn.metrics import mean_absolute_error, r2_score
+import matplotlib.pyplot as plt
 
 # Load the data from the csv
 df = load_lap_data("raw_lap_data.csv")
@@ -42,11 +43,10 @@ model_s1.fit(X_train, y_train_s1)
 model_s2.fit(X_train, y_train_s2)
 model_s3.fit(X_train, y_train_s3)
 
-
 # Predict all laps using sectors
-s1_preds = model_s1.predict(X)(X_test)
-s2_preds = model_s2.predict(X)(X_test)
-s3_preds = model_s3.predict(X)(X_test)
+s1_preds = model_s1.predict(X_test)
+s2_preds = model_s2.predict(X_test)
+s3_preds = model_s3.predict(X_test)
 
 # Reconstruct lap time using test set values
 lap_preds = s1_preds + s2_preds + s3_preds # Array of length 60
@@ -68,7 +68,7 @@ for name, y_true, y_pred in zip(
 
 lap_mae = mean_absolute_error(lap_actual, lap_preds)
 lap_r2 = r2_score(lap_actual, lap_preds)
-print(f"/n=== Total Lap Prediction Performance ===")
+print(f"\n=== Total Lap Prediction Performance ===")
 print(f"MAE = {lap_mae:.3f}, R2 = {lap_r2:.3f}")
 
 # Lap 1 predicted time
@@ -86,4 +86,16 @@ print('\n=== Sector predictions: ===')
 print('S1 Prediction: ', np.round(s1_preds[0], 2), 'Actual S1 time: ', y_s1.iloc[0])
 print('S2 Prediction: ', np.round(s2_preds[0], 2), 'Actual S2 time: ', y_s2.iloc[0])
 print('S3 Prediction: ', np.round(s3_preds[0], 2), 'Actual S3 time: ', y_s3.iloc[0])
+
+# Feature Importance Visualisation
+importances = model_s1.feature_importances_
+sorted_idx = np.argsort(importances)
+sorted_features = np.array(features)[sorted_idx]
+plt.figure(figsize=(8,5))
+plt.barh(range(len(sorted_idx)), importances[sorted_idx], align='center', color='skyblue')
+plt.yticks(range(len(sorted_idx)), np.array(features)[sorted_idx])
+plt.xlabel("Feature Importance Score")
+plt.title("Feature Importance for Sector 1 Lap Time Prediction")
+plt.tight_layout()
+plt.show()
 
