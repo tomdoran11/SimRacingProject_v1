@@ -5,6 +5,7 @@ from sklearn.ensemble import RandomForestRegressor
 import numpy as np
 from sklearn.metrics import mean_absolute_error, r2_score
 import matplotlib.pyplot as plt
+plt.ioff()
 
 # Load the data from the csv
 df = load_lap_data("raw_lap_data.csv")
@@ -98,4 +99,20 @@ plt.xlabel("Feature Importance Score")
 plt.title("Feature Importance for Sector 1 Lap Time Prediction")
 plt.tight_layout()
 plt.show()
+
+# Residual Error analysis
+residuals = lap_actual - lap_preds
+plt.figure(figsize=(8, 5))
+plt.scatter(lap_preds, residuals, alpha=0.7, color='orange', edgecolor='k')
+plt.axhline(0, color='red', linestyle='--', lw=2)
+plt.xlabel("Predicted lap time")
+plt.ylabel("Residual (Actual - predicted)")
+plt.title("Residual analysis for Lap time predictions")
+plt.grid(True, linestyle='--', alpha=0.5)
+plt.tight_layout()
+plt.show()
+
+# Show summary stats
+print("\nResidual mean: ", round(np.mean(residuals),3))
+print("Residual standard deviation: ", round(np.mean(residuals),3))
 
