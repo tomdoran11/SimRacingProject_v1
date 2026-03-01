@@ -5,6 +5,7 @@ from sklearn.ensemble import RandomForestRegressor
 import numpy as np
 from sklearn.metrics import mean_absolute_error, r2_score
 import matplotlib.pyplot as plt
+from sklearn.model_selection import cross_val_score
 plt.ioff()
 
 # Load the data from the csv
@@ -54,7 +55,7 @@ lap_preds = s1_preds + s2_preds + s3_preds # Array of length 60
 lap_actual = y_test_s1 + y_test_s2 + y_test_s3
 
 lap_preds_rounded = np.round(lap_preds, 3)
-diff = abs(lap_preds[0]- y.iloc[0])
+diff = abs(lap_preds[0]- lap_actual.iloc[0])
 
 # Evaluate each sector model
 print("\n=== Sector Model Performance ===")
@@ -88,6 +89,28 @@ print('S1 Prediction: ', np.round(s1_preds[0], 2), 'Actual S1 time: ', y_s1.iloc
 print('S2 Prediction: ', np.round(s2_preds[0], 2), 'Actual S2 time: ', y_s2.iloc[0])
 print('S3 Prediction: ', np.round(s3_preds[0], 2), 'Actual S3 time: ', y_s3.iloc[0])
 
+# Cross validation
+print("\n=== Cross Validation Results (5-fold) ===")
+
+for name, target in zip(
+    ['Sector 1', 'Sector 2', 'Sector 3'],
+    [y_s1, y_s2, y_s3]
+):
+    model = RandomForestRegressor(n_estimators=100, random_state=42)
+
+    scores = cross_val_score(
+        model,
+        X,
+        target,
+        cv=5,
+        scoring='r2'
+    )
+
+    print(f"\n{name}")
+    print("R2 Scores = ", np.round(scores, 3))
+    print('Mean R2 = ', round(np.mean(scores), 3))
+    print('Std Dev = ', round(np.std(scores), 3))
+
 # Feature Importance Visualisation
 importances = model_s1.feature_importances_
 sorted_idx = np.argsort(importances)
@@ -114,5 +137,7 @@ plt.show()
 
 # Show summary stats
 print("\nResidual mean: ", round(np.mean(residuals),3))
-print("Residual standard deviation: ", round(np.mean(residuals),3))
+print("Residual standard deviation: ", round(np.std(residuals),3))
+
+
 
