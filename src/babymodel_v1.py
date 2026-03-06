@@ -75,13 +75,13 @@ print(f"MAE = {lap_mae:.3f}, R2 = {lap_r2:.3f}")
 
 # Lap 1 predicted time
 print('\nPredicted lap time: ', np.round(lap_preds[0], 3))
-print('Actual lap time: ', y.iloc[0])
+print('Actual lap time: ', lap_actual.iloc[0])
 print('Diff = ', round(diff, 2))
 
 # print first 5 lap predictions
 print("\n=== First 5 laps predicted vs actual: ===")
 for i in range(5):
-    print(f"Lap {i+1} Predicted: {round(lap_preds[i], 2)}, Actual: {round(df['lap_time'].iloc[i], 2)}")
+    print(f"Lap {i+1} Predicted: {round(lap_preds[i], 2)}, Actual: {round(lap_actual.iloc[i], 2)}")
 
 # Lap 1 Sector Predictions
 print('\n=== Sector predictions: ===')
@@ -111,12 +111,52 @@ for name, target in zip(
     print('Mean R2 = ', round(np.mean(scores), 3))
     print('Std Dev = ', round(np.std(scores), 3))
 
-# Feature Importance
-print("\n=== Feature Importance Sector 1 ===")
-importances = model_s1.feature_importances_
+# Lap time prediction function
+def predict_lap(throttle, brake, speed, tire_wear, rain):
+    X_new = pd.DataFrame([{
+        "avg_throttle": throttle,
+        "avg_brake": brake,
+        "avg_speed": speed,
+        "tire_wear": tire_wear,
+        "rain_percentage": rain
+    }])
 
-for feature, importance in zip(features, importances):
-    print(f"{feature}: {round(importance, 3)}")
+    s1 = model_s1.predict(X_new)[0]
+    s2 = model_s2.predict(X_new)[0]
+    s3 = model_s3.predict(X_new)[0]
+
+    lap_time = s1 + s2 + s3
+
+    return round(lap_time, 3)
+
+predicted = predict_lap(
+    throttle=0.69,
+    brake=0.11,
+    speed=144.0,
+    tire_wear=0.45,
+    rain=0
+)
+print("\n=== New lap prediction tool ===")
+print("Predicted lap time:", predicted)
+
+
+# Feature Importance
+print("\n=== Feature Importance by sector ===")
+
+for name, sector_model in zip(
+    ["Sector 1", "Sector 2", "Sector 3"],
+    [model_s1, model_s2, model_s3]
+):
+    print(f"\n{name}")
+
+    for feature, importance in zip(features, sector_model.feature_importances_):
+        print(f"{feature}: {round(importance,3)}")
+
+
+# Show summary stats
+residuals = lap_actual - lap_preds
+print("\nResidual mean: ", round(np.mean(residuals),3))
+print("Residual standard deviation: ", round(np.std(residuals),3))
 
 # Feature Importance Visualisation
 importances = model_s1.feature_importances_
@@ -131,7 +171,6 @@ plt.tight_layout()
 plt.show()
 
 # Residual Error analysis
-residuals = lap_actual - lap_preds
 plt.figure(figsize=(8, 5))
 plt.scatter(lap_preds, residuals, alpha=0.7, color='orange', edgecolor='k')
 plt.axhline(0, color='red', linestyle='--', lw=2)
@@ -146,7 +185,6 @@ plt.show()
 plt.figure(figsize=(10,5))
 plt.plot(lap_actual.values, label="Actual lap time", marker = 'o')
 plt.plot(lap_preds, label="Predicted Lap Time", marker = 'x')
-
 plt.xlabel("Lap number")
 plt.ylabel("Lap time (s)")
 plt.title("Actual vs Predicted lap times")
@@ -155,10 +193,6 @@ plt.grid(True)
 plt.show()
 
 
-
-# Show summary stats
-print("\nResidual mean: ", round(np.mean(residuals),3))
-print("Residual standard deviation: ", round(np.std(residuals),3))
 
 
 
