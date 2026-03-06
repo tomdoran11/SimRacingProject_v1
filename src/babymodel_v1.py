@@ -111,6 +111,13 @@ for name, target in zip(
     print('Mean R2 = ', round(np.mean(scores), 3))
     print('Std Dev = ', round(np.std(scores), 3))
 
+# Feature Importance
+print("\n=== Feature Importance Sector 1 ===")
+importances = model_s1.feature_importances_
+
+for feature, importance in zip(features, importances):
+    print(f"{feature}: {round(importance, 3)}")
+
 # Feature Importance Visualisation
 importances = model_s1.feature_importances_
 sorted_idx = np.argsort(importances)
@@ -134,6 +141,20 @@ plt.title("Residual analysis for Lap time predictions")
 plt.grid(True, linestyle='--', alpha=0.5)
 plt.tight_layout()
 plt.show()
+
+# Actual vs Predicted plot
+plt.figure(figsize=(10,5))
+plt.plot(lap_actual.values, label="Actual lap time", marker = 'o')
+plt.plot(lap_preds, label="Predicted Lap Time", marker = 'x')
+
+plt.xlabel("Lap number")
+plt.ylabel("Lap time (s)")
+plt.title("Actual vs Predicted lap times")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+
 
 # Show summary stats
 print("\nResidual mean: ", round(np.mean(residuals),3))
