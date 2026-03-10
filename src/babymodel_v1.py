@@ -6,6 +6,7 @@ import numpy as np
 from sklearn.metrics import mean_absolute_error, r2_score
 import matplotlib.pyplot as plt
 from sklearn.model_selection import cross_val_score
+from sklearn.linear_model import LinearRegression
 plt.ioff()
 
 # Load the data from the csv
@@ -56,6 +57,28 @@ lap_actual = y_test_s1 + y_test_s2 + y_test_s3
 
 lap_preds_rounded = np.round(lap_preds, 3)
 diff = abs(lap_preds[0]- lap_actual.iloc[0])
+
+# Baseline linear regression model
+
+lin_s1 = LinearRegression()
+lin_s2 = LinearRegression()
+lin_s3 = LinearRegression()
+
+lin_s1.fit(X_train, y_train_s1)
+lin_s2.fit(X_train, y_train_s2)
+lin_s3.fit(X_train, y_train_s3)
+
+lin_pred_s1 = lin_s1.predict(X_test)
+lin_pred_s2 = lin_s2.predict(X_test)
+lin_pred_s3 = lin_s3.predict(X_test)
+
+lin_lap_preds = lin_pred_s1 + lin_pred_s2 + lin_pred_s3
+
+print("\n===  Linear Regression Baselne  ===")
+mae = mean_absolute_error(lap_actual, lin_lap_preds)
+r2 = r2_score(lap_actual, lin_lap_preds)
+print(f"Lap MAE = {mae:.3f}")
+print(f"Lap R2 = {r2:.3f}")
 
 # Evaluate each sector model
 print("\n=== Sector Model Performance ===")
