@@ -7,6 +7,7 @@ from sklearn.metrics import mean_absolute_error, r2_score
 import matplotlib.pyplot as plt
 from sklearn.model_selection import cross_val_score
 from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import GradientBoostingRegressor
 plt.ioff()
 
 # Load the data from the csv
@@ -74,7 +75,7 @@ lin_pred_s3 = lin_s3.predict(X_test)
 
 lin_lap_preds = lin_pred_s1 + lin_pred_s2 + lin_pred_s3
 
-print("\n===  Linear Regression Baselne  ===")
+print("\n===  Linear Regression Baseline  ===")
 mae = mean_absolute_error(lap_actual, lin_lap_preds)
 r2 = r2_score(lap_actual, lin_lap_preds)
 print(f"Lap MAE = {mae:.3f}")
