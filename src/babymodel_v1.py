@@ -173,8 +173,17 @@ for name, sector_model in zip(
 ):
     print(f"\n{name}")
 
-    for feature, importance in zip(features, sector_model.feature_importances_):
-        print(f"{feature}: {round(importance,3)}")
+    importances = sector_model.feature_importances_
+
+    # sort telemetry by importance relevant to lap time influence
+    sorted_features = sorted(
+        zip(features, importances),
+        key=lambda x: x[1],
+        reverse=True
+    )
+
+    for feature, importance in sorted_features:
+        print(f"{feature}: {round(importance, 3)}")
 
 
 # Show summary stats
