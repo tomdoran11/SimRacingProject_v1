@@ -11,7 +11,7 @@ from sklearn.ensemble import GradientBoostingRegressor
 plt.ioff()
 
 # Load the data from the csv
-df = load_lap_data("raw_lap_data.csv")
+df = load_lap_data("")
 
 # Select features and target
 features = ['avg_throttle', 'avg_brake', 'avg_speed', 'tire_wear', 'rain_percentage']
