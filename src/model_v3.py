@@ -236,7 +236,7 @@ for name, sector_model in zip(
 # Driver feedback tool!
 # find best lap
 best_idx = np.argmin(lap_actual.values)
-best_lap = X_test.iloc[best_idx]
+best_lap = X_test.mean()
 
 track_sections = {
     "s1": "Turns 1-4",
@@ -250,44 +250,59 @@ print("="*50)
 def driver_feedback(lap_index):
     current = X_test.iloc[lap_index]
     diff = current - best_lap
-
+    feedback = {"s1": [], "s2": [], "s3": []}
     for i, val in enumerate(diff):
         feature = X.columns[i]
 
-        if abs(val) <= 0.05:
+        if abs(val) <= 0.015:
             continue
 
         sector = feature.split("_")[0]
-        metric = "_".join(feature.split("_")[1])
-
-        # Throttle
-        if metric == "Throttle":
-            if val < 0:
-                print(f"{sector.upper()} ({track_sections[sector]}): Throttle applied too late, try pushing the throttle earlier coming out of the corner for extra speed.")
-            else:
-                print(f"{sector.upper()} ({track_sections[sector]}): Throttle applied too aggresively, try pushing the throttle more gently coming out of the corner for better control.")
+        metric = "_".join(feature.split("_")[1:])
 
         # Speed
-        elif metric == "Speed":
+        if metric == "Speed":
             if val < 0:
-                print(f"{sector.upper()} ({track_sections[sector]}): Exit speed from the corner is too low, try carrying more speed through the corner for more speed onto the straight.")
+                msg = "Exit speed is lower than optimal, carry more speed through the corner."
             else:
-                print(f"{sector.upper()} ({track_sections[sector]}): Corner entry speed is too hugh, brake slightly earlier for better control and stability.")
-
-        # Braking
+                msg = "Entry speed too high, brake slightly earlier for better control."
+        # Throttle
+        elif metric == "Throttle":
+            if val < 0:
+                msg = "Throttle applied too late, get on power earlier."
+            else:
+                msg = "Throttle too aggressive, apply power more smoothly."
+        # Brake
         elif metric == "Brake":
             if val < 0:
-                print(f"{sector.upper()} ({track_sections[sector]}): Braking is too heavy, try being smoother on the brake pedal.")
+                msg = "Braking too heavy, be smoother on the pedal."
             else:
-                print(f"{sector.upper()} ({track_sections[sector]}): Braking is too light, try braking earlier and harder for the corner.")
-
+                msg = "Braking too light, brake earlier and harder."
         # Steering
-        elif metric == "Steering":
-            if val < 0:
-                print(f"{sector.upper()} ({track_sections[sector]}): Steering input is not consistent, try to turn the wheel smoothly and don't rush turning into corners.")
-        if all(abs(val) <= 0.02 for val in diff):
-            print("\nNo major issues with lap time detected, well done!!!")
+        elif "Steering" in metric:
+            msg = "Steering input inconsistent, focus on smoother turn-in."
+        else:
+            continue
 
+        if msg not in feedback[sector]:
+            feedback[sector].append(msg)
+
+    # Print
+    printed = False
+
+    for sector in ["s1", "s2", "s3"]:
+        if feedback[sector]:
+            printed = True
+            print(f"\n{sector.upper()} ({track_sections[sector]}):")
+
+            # Limit improvements to 2
+            for msg in feedback[sector][:2]:
+                print(f"  • {msg}")
+
+    if not printed:
+        print("\nLap is very close to optimal — no major issues detected.")
+
+driver_feedback(0)
 # Show summary stats
 residuals = lap_actual - lap_preds
 print("\nResidual mean: ", round(np.mean(residuals),3))

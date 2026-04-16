@@ -85,3 +85,54 @@ _, _, y_s3_train, y_s3_test = train_test_split(
     X, y_s3, test_size=0.2, random_state=42
 )
 
+def driver_feedback(lap_index):
+    current = X_test.iloc[lap_index]
+    diff = current - best_lap
+
+    for i, val in enumerate(diff):
+        feature = X.columns[i]
+
+        if abs(val) <= 0.015:
+            continue
+
+        sector = feature.split("_")[0]
+        metric = "_".join(feature.split("_")[1:])
+        feedback = {"s1": [], "s2": [], "s3": []}
+        if msg not in feedback[sector]:
+            feedback[sector].append(msg)
+
+        # Throttle
+        if metric == "Throttle":
+            if val < 0:
+                feedback[sector].append(f"{track_sections[sector]}): Throttle applied too late, try pushing the throttle earlier coming out of the corner for extra speed.")
+            else:
+                feedback[sector].append(f"{track_sections[sector]}): Throttle applied too aggresively, try pushing the throttle more gently coming out of the corner for better control.")
+
+        # Speed
+        elif metric == "Speed":
+            if val < 0:
+                feedback[sector].append(f"{track_sections[sector]}): Exit speed from the corner is too low, try carrying more speed through the corner for more speed onto the straight.")
+            else:
+                feedback[sector].append(f"{track_sections[sector]}): Corner entry speed is too hugh, brake slightly earlier for better control and stability.")
+
+        # Braking
+        elif metric == "Brake":
+            if val < 0:
+                feedback[sector].append(f"{track_sections[sector]}): Braking is too heavy, try being smoother on the brake pedal.")
+            else:
+                feedback[sector].append(f"{track_sections[sector]}): Braking is too light, try braking earlier and harder for the corner.")
+
+        # Steering
+        elif "Steering" in metric:
+            if val < 0:
+                feedback[sector].append(f"{track_sections[sector]}): Steering input is not consistent, try to turn the wheel smoothly and don't rush turning into corners.")
+        if np.all(np.abs(diff.values)<+ 0.02):
+            feedback[sector].append(f"\nNo major issues with lap time detected, well done!!!")
+
+    for sector in ["s1", "s2", "s3"]:
+        if feedback[sector]:
+            print(f"\n{sector.upper()} ({track_sections[sector]}")
+            # Limit to 2 improvements
+            for msg in feedback[sector][:2]:
+                print(f"  . {msg}")
+driver_feedback(0)
