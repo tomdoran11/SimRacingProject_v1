@@ -122,14 +122,18 @@ lin_pred_s3 = lin_s3.predict(X_test)
 
 lin_lap_preds = lin_pred_s1 + lin_pred_s2 + lin_pred_s3
 
-print("\n===  Linear Regression Baseline  ===")
+print("\n" +"="*50)
+print("Linear Regression Baseline")
+print("="*50)
 mae = mean_absolute_error(lap_actual, lin_lap_preds)
 r2 = r2_score(lap_actual, lin_lap_preds)
 print(f"Lap MAE = {mae:.3f}")
 print(f"Lap R2 = {r2:.3f}")
 
 # Evaluate each sector model
-print("\n=== Sector Model Performance ===")
+print("\n" +"="*50)
+print(" Sector Model Performance")
+print("="*50)
 for name, y_true, y_pred in zip(
     ['Sector 1', 'Sector 2', 'Sector 3'],
     [y_test_s1, y_test_s2, y_test_s3],
@@ -141,27 +145,37 @@ for name, y_true, y_pred in zip(
 
 lap_mae = mean_absolute_error(lap_actual, lap_preds)
 lap_r2 = r2_score(lap_actual, lap_preds)
-print(f"\n=== Total Lap Prediction Performance ===")
+print("\n" +"="*50)
+print(f"Total Lap Prediction Performance")
+print("="*50)
 print(f"MAE = {lap_mae:.3f}, R2 = {lap_r2:.3f}")
 
 # Lap 1 predicted time
-print('\nPredicted lap time: ', np.round(lap_preds[0], 3))
-print('Actual lap time: ', lap_actual.iloc[0])
-print('Diff = ', round(diff, 2))
+print("\nLap Comparison (Example lap)")
+print("="*50)
+print(f'Predicted: , {lap_preds[0]:.3f}s')
+print(f'Actual lap time: {lap_actual.iloc[0]:.3f}s')
+print('Delta: {round(diff:3f}s')
 
 # print first 5 lap predictions
-print("\n=== First 5 laps predicted vs actual: ===")
+print("\n" +"="*50)
+print("First 5 lap comparison")
+print("="*50)
 for i in range(min(5, len(lap_preds))):
-    print(f"Lap {i+1} Predicted: {round(lap_preds[i], 2)}, Actual: {round(lap_actual.iloc[i], 2)}")
+    print(f"Lap {i+1:<2} Predicted: {lap_preds[i]:.2f)}s, Actual: {lap_actual.iloc[i]:.2f}s")
 
 # Lap 1 Sector Predictions
-print('\n=== Sector predictions: ===')
+print("\n" +"="*50)
+print('Sector Breakdown (Example lap)')
+print("="*50)
 print('S1 Prediction: ', np.round(s1_preds[0], 2), 'Actual S1 time: ', y_s1.iloc[0])
 print('S2 Prediction: ', np.round(s2_preds[0], 2), 'Actual S2 time: ', y_s2.iloc[0])
 print('S3 Prediction: ', np.round(s3_preds[0], 2), 'Actual S3 time: ', y_s3.iloc[0])
 
 # Cross validation
-print("\n=== Cross Validation Results (5-fold) ===")
+print("\n" +"="*50)
+print("Cross Validation Results (5-fold)")
+print("="*50)
 
 for name, target in zip(
     ['Sector 1', 'Sector 2', 'Sector 3'],
@@ -192,7 +206,9 @@ def predict_lap(row_index=0):
     return round(s1+ s2+ s3, 3)
 
 predicted_lap = predict_lap(0)
-print("\n=== New lap prediction tool ===")
+print("\n" +"="*50)
+print("New lap prediction tool")
+print("="*50)
 print("Predicted lap time:", predicted_lap, "seconds")
 
 
@@ -222,7 +238,9 @@ for name, sector_model in zip(
 best_idx = np.argmin(lap_actual.values)
 best_lap = X_test[best_idx]
 
-print("\n=== Driver Feedback Analysis ===")
+print("\n" +"="*50)
+print("Driver Feedback Analysis")
+print("="*50)
 def driver_feedback(lap_index):
     current = X_test[lap_index]
     diff = current - best_lap
