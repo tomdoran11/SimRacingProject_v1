@@ -74,8 +74,8 @@ X_train, X_test, idx_train, idx_test = train_test_split(
 )
 
 scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train)
-X_test = scaler.transform(X_test)
+X_train = pd.DataFrame(scaler.fit_transform(X_train), columns = X.columns)
+X_test = pd.DataFrame(scaler.transform(X_test), columns=X.columns)
 
 y_train_s1, y_test_s1 = y_s1.iloc[idx_train], y_s1.iloc[idx_test]
 y_train_s2, y_test_s2 = y_s2.iloc[idx_train], y_s2.iloc[idx_test]
@@ -150,19 +150,19 @@ print(f"Total Lap Prediction Performance")
 print("="*50)
 print(f"MAE = {lap_mae:.3f}, R2 = {lap_r2:.3f}")
 
-# Lap 1 predicted time
+# Lap predicted time
 print("\nLap Comparison (Example lap)")
 print("="*50)
-print(f'Predicted: , {lap_preds[0]:.3f}s')
+print(f'Predicted: {lap_preds[0]:.3f}s')
 print(f'Actual lap time: {lap_actual.iloc[0]:.3f}s')
-print('Delta: {round(diff:3f}s')
+print(f'Delta: {diff:.3f}s')
 
 # print first 5 lap predictions
 print("\n" +"="*50)
-print("First 5 lap comparison")
+print("First 4 lap comparison")
 print("="*50)
 for i in range(min(5, len(lap_preds))):
-    print(f"Lap {i+1:<2} Predicted: {lap_preds[i]:.2f)}s, Actual: {lap_actual.iloc[i]:.2f}s")
+    print(f"Lap {i+1:<2} Predicted: {lap_preds[i]:.2f}s, Actual: {lap_actual.iloc[i]:.2f}s")
 
 # Lap 1 Sector Predictions
 print("\n" +"="*50)
@@ -236,23 +236,57 @@ for name, sector_model in zip(
 # Driver feedback tool!
 # find best lap
 best_idx = np.argmin(lap_actual.values)
-best_lap = X_test[best_idx]
+best_lap = X_test.iloc[best_idx]
+
+track_sections = {
+    "s1": "Turns 1-4",
+    "s2": "Turns 5-6",
+    "s3": "Turns 7-9",
+}
 
 print("\n" +"="*50)
 print("Driver Feedback Analysis")
 print("="*50)
 def driver_feedback(lap_index):
-    current = X_test[lap_index]
+    current = X_test.iloc[lap_index]
     diff = current - best_lap
+
     for i, val in enumerate(diff):
         feature = X.columns[i]
 
-        if abs(val) > 0.05:
-            if val > 0:
-                print(f"{feature}: Too high!")
+        if abs(val) <= 0.05:
+            continue
+
+        sector = feature.split("_")[0]
+        metric = "_".join(feature.split("_")[1])
+
+        # Throttle
+        if metric == "Throttle":
+            if val < 0:
+                print(f"{sector.upper()} ({track_sections[sector]}): Throttle applied too late, try pushing the throttle earlier coming out of the corner for extra speed.")
             else:
-                print(f"{feature}: Too low!")
-driver_feedback(0)
+                print(f"{sector.upper()} ({track_sections[sector]}): Throttle applied too aggresively, try pushing the throttle more gently coming out of the corner for better control.")
+
+        # Speed
+        elif metric == "Speed":
+            if val < 0:
+                print(f"{sector.upper()} ({track_sections[sector]}): Exit speed from the corner is too low, try carrying more speed through the corner for more speed onto the straight.")
+            else:
+                print(f"{sector.upper()} ({track_sections[sector]}): Corner entry speed is too hugh, brake slightly earlier for better control and stability.")
+
+        # Braking
+        elif metric == "Brake":
+            if val < 0:
+                print(f"{sector.upper()} ({track_sections[sector]}): Braking is too heavy, try being smoother on the brake pedal.")
+            else:
+                print(f"{sector.upper()} ({track_sections[sector]}): Braking is too light, try braking earlier and harder for the corner.")
+
+        # Steering
+        elif metric == "Steering":
+            if val < 0:
+                print(f"{sector.upper()} ({track_sections[sector]}): Steering input is not consistent, try to turn the wheel smoothly and don't rush turning into corners.")
+        if all(abs(val) <= 0.02 for val in diff):
+            print("\nNo major issues with lap time detected, well done!!!")
 
 # Show summary stats
 residuals = lap_actual - lap_preds
