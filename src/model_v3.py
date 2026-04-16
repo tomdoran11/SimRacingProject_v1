@@ -233,7 +233,8 @@ for name, sector_model in zip(
     for feature, importance in sorted_features:
         print(f"{feature}: {round(importance, 3)}")
 
-# Driver feedback tool!
+# Driver feedback tool!!!
+
 # find best lap
 best_idx = np.argmin(lap_actual.values)
 best_lap = X_test.mean()
@@ -247,6 +248,7 @@ track_sections = {
 print("\n" +"="*50)
 print("Driver Feedback Analysis")
 print("="*50)
+
 def driver_feedback(lap_index):
     current = X_test.iloc[lap_index]
     diff = current - best_lap
@@ -287,9 +289,8 @@ def driver_feedback(lap_index):
         if msg not in feedback[sector]:
             feedback[sector].append(msg)
 
-    # Print
+    # Print improvements
     printed = False
-
     for sector in ["s1", "s2", "s3"]:
         if feedback[sector]:
             printed = True
@@ -303,6 +304,7 @@ def driver_feedback(lap_index):
         print("\nLap is very close to optimal — no major issues detected.")
 
 driver_feedback(0)
+
 # Show summary stats
 residuals = lap_actual - lap_preds
 print("\nResidual mean: ", round(np.mean(residuals),3))
