@@ -1,6 +1,6 @@
 
 #### CODE CHUNKS THAT HAVE BEEN REMOVED
-#### FROM MAIN CODE - KEPT INCASE NEEDED AGAIN
+#### FROM MAIN CODE - KEPT IN CASE NEEDED AGAIN
 
 import pandas as pd
 import numpy as np
