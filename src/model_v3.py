@@ -85,11 +85,11 @@ y_train_s3, y_test_s3 = y_s3.iloc[idx_train], y_s3.iloc[idx_test]
 model_s1 = RandomForestRegressor(
     n_estimators=300, random_state=42, max_depth=10, min_samples_split=5, min_samples_leaf=2)
 model_s2 = RandomForestRegressor(
-    n_estimators=100, random_state=42,  max_depth=10, min_samples_split=5, min_samples_leaf=2)
+    n_estimators=300, random_state=42,  max_depth=10, min_samples_split=5, min_samples_leaf=2)
 model_s3 = RandomForestRegressor(
-    n_estimators=100, random_state=42, max_depth=10, min_samples_split=5, min_samples_leaf=2)
+    n_estimators=300, random_state=42, max_depth=10, min_samples_split=5, min_samples_leaf=2)
 
-#Fit all models using only training data
+# Fit all models using only training data
 model_s1.fit(X_train, y_train_s1)
 model_s2.fit(X_train, y_train_s2)
 model_s3.fit(X_train, y_train_s3)
