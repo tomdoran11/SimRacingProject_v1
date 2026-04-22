@@ -27,7 +27,7 @@ Final year project using machine learning to evaluate sim racing performance usi
 - model_v3 is the final version and the core (as of 22/04/2026) and was tested with silverstone_20laps_p911gt3_v1.csv
 - Data is stored in '/data'
 - Models and other code is included in '/src'
-- 
+- raw_lap_data.csv is fake generated data that was used for practice in early development
 
 
 
