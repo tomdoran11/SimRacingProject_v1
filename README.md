@@ -1,6 +1,9 @@
 # SimRacingProject_v1
 Final year project using machine learning to evaluate sim racing performance using python and scikit-learn.
 
+# IMPORTANT
+- Please note - 
+- model_v3.py is the main model. babymodel_v1.py was used at the start of the project, using fake generated data. It is not a part of the final model_v3 code, but is left in the file.
 # iRacing Telemetry Machine Learning System
 - Developed in Python 3.12
 
