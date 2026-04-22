@@ -157,7 +157,7 @@ print(f'Predicted: {lap_preds[0]:.3f}s')
 print(f'Actual lap time: {lap_actual.iloc[0]:.3f}s')
 print(f'Delta: {diff:.3f}s')
 
-# print first 5 lap predictions
+# print first 4 lap predictions
 print("\n" +"="*50)
 print("First 4 lap comparison")
 print("="*50)
@@ -239,6 +239,7 @@ for name, sector_model in zip(
 best_idx = np.argmin(lap_actual.values)
 best_lap = X_test.mean()
 
+# manually selected from Silverstone International Circuit
 track_sections = {
     "s1": "Turns 1-4",
     "s2": "Turns 5-6",
