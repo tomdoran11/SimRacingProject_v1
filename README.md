@@ -16,6 +16,7 @@ Final year project using machine learning to evaluate sim racing performance usi
 - pandas
 - numpy
 - scikit-learn
+- matplotlib for diagrams
 
 # How to run the code
 - Run the main 'model_v3', ensuring model is reading correct, preprocessed data
