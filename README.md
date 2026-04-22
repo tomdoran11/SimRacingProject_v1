@@ -20,6 +20,7 @@ Final year project using machine learning to evaluate sim racing performance usi
 
 # How to run the code
 - Run the main 'model_v3', ensuring model is reading correct, preprocessed data
+- pip insrall -r Requirements.txt
 
 # Additional notes
 - babymodel_v1.py and load_data was used for the first created system, based on fake data for practice
